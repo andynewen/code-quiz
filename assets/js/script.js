@@ -24,17 +24,6 @@ function startQuiz() {
     setQuestion(questionCount);
 }
 
-//Answer buttons within the page
-const ansBtn = document.querySelectorAll("button.ansBtn")
-const ans1Btn = document.querySelector("#answer1");
-const ans2Btn = document.querySelector("#answer2");
-const ans3Btn = document.querySelector("#answer3");
-const ans4Btn = document.querySelector("#answer4");
-//Checks answers
-ansBtn.forEach(item => {
-    item.addEventListener('click', checkAnswer);
-});
-
 //Object for questions, answers and correct answers
 const questions = [ // array of objects
     {
@@ -68,6 +57,17 @@ const questions = [ // array of objects
         correctAnswer: "3"
     }
 ];
+
+//Answer buttons within the page
+const ansBtn = document.querySelectorAll("button.ansBtn")
+const ans1Btn = document.querySelector("#answer1");
+const ans2Btn = document.querySelector("#answer2");
+const ans3Btn = document.querySelector("#answer3");
+const ans4Btn = document.querySelector("#answer4");
+//Checks answers
+ansBtn.forEach(item => {
+    item.addEventListener('click', checkAnswer);
+});
 
 //Timer for quiz
 function setTime() {
@@ -124,3 +124,95 @@ function checkAnswer(event) {
     //Call setQuestion to bring in next question when any ansBtn is clicked
     setQuestion(questionCount);
 }
+
+
+
+//Ordered list
+let scoreListEl = document.querySelector("#score-list");
+//Array of scores
+let scoreList = [];
+
+function addScore(event) {
+    event.preventDefault();
+
+    finalEl.style.display = "none";
+    highscoresEl.style.display = "block";
+
+    let init = initialsInput.value.toUpperCase();
+    scoreList.push({ initials: init, score: secondsLeft });
+
+    //Sort scores
+    scoreList = scoreList.sort((a, b) => {
+        if (a.score < b.score) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
+    
+    scoreListEl.innerHTML="";
+    for (let i = 0; i < scoreList.length; i++) {
+        let li = document.createElement("li");
+        li.textContent = `${scoreList[i].initials}: ${scoreList[i].score}`;
+        scoreListEl.append(li);
+    }
+
+    //Add to local storage
+    storeScores();
+    displayScores();
+}
+
+//Final Section
+const finalEl = document.querySelector("#final");
+//User initials
+let initialsInput = document.querySelector("#initials");
+
+function storeScores() {
+    localStorage.setItem("scoreList", JSON.stringify(scoreList));
+}
+
+//Display scores
+function displayScores() {
+    //Get stored scores from localStorage
+    //Parsing the JSON string to an object
+    let storedScoreList = JSON.parse(localStorage.getItem("scoreList"));
+
+    //If scores were retrieved from localStorage, update the scorelist array to it
+    if (storedScoreList !== null) {
+        scoreList = storedScoreList;
+    }
+}
+
+//Clear scores
+const clearScrBtn = document.querySelector("#clearscores");
+function clearScores() {
+    localStorage.clear();
+    scoreListEl.innerHTML="";
+}
+clearScrBtn.addEventListener("click", clearScores);
+
+//Submit scores
+const submitScrBtn = document.querySelector("#submit-score");
+submitScrBtn.addEventListener("click", addScore);
+
+//Go back to restart the quiz
+const goBackBtn = document.querySelector("#goback");
+goBackBtn.addEventListener("click", function () {
+    highscoresEl.style.display = "none";
+    introEl.style.display = "block";
+    secondsLeft = 75;
+    timeEl.textContent = `Time:${secondsLeft}s`;
+});
+
+//Section highscores
+const highscoresEl = document.querySelector("#highscores");
+const viewScrBtn = document.querySelector("#high-score");
+viewScrBtn.addEventListener("click", function () {
+    if (highscoresEl.style.display === "none") {
+        highscoresEl.style.display = "block";
+    } else if (highscoresEl.style.display === "block") {
+        highscoresEl.style.display = "none";
+    } else {
+        return alert("No available scores to show at the moment.");
+    }
+});
