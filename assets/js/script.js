@@ -12,7 +12,6 @@ let questionEl = document.querySelector("#question");
 let questionCount = 0;
 const yesnoEl = document.querySelector("#yesno");
 
-
 //Button to start the quiz with timer and display questions
 const startBtn = document.querySelector("#start");
 startBtn.addEventListener("click", startQuiz);
@@ -25,27 +24,16 @@ function startQuiz() {
     setQuestion(questionCount);
 }
 
-//Timer for quiz
-function setTime() {
-    let timerInterval = setInterval(function () {
-        secondsLeft--;
-        timeEl.textContent = `Time:${secondsLeft}s`;
-
-        if (secondsLeft === 0 || questionCount === questions.length) {
-            clearInterval(timerInterval);
-            questionsEl.style.display = "none";
-            finalEl.style.display = "block";
-            scoreEl.textContent = secondsLeft;
-        }
-    }, 1000);
-}
-
-//All buttons within the page
+//Answer buttons within the page
 const ansBtn = document.querySelectorAll("button.ansBtn")
 const ans1Btn = document.querySelector("#answer1");
 const ans2Btn = document.querySelector("#answer2");
 const ans3Btn = document.querySelector("#answer3");
 const ans4Btn = document.querySelector("#answer4");
+//Checks answers
+ansBtn.forEach(item => {
+    item.addEventListener('click', checkAnswer);
+});
 
 //Object for questions, answers and correct answers
 const questions = [ // array of objects
@@ -81,6 +69,21 @@ const questions = [ // array of objects
     }
 ];
 
+//Timer for quiz
+function setTime() {
+    let timerInterval = setInterval(function () {
+        secondsLeft--;
+        timeEl.textContent = `Time:${secondsLeft}s`;
+
+        if (secondsLeft === 0 || questionCount === questions.length) {
+            clearInterval(timerInterval);
+            questionsEl.style.display = "none";
+            finalEl.style.display = "block";
+            scoreEl.textContent = secondsLeft;
+        }
+    }, 1000);
+}
+
 //Function to set the questions 
 function setQuestion(id) {
     if (id < questions.length) {
@@ -90,4 +93,34 @@ function setQuestion(id) {
         ans3Btn.textContent = questions[id].answers[2];
         ans4Btn.textContent = questions[id].answers[3];
     }
+}
+
+//Function to check answer and then move to next question
+function checkAnswer(event) {
+    event.preventDefault();
+
+    //Show section for yesno and append message
+    yesnoEl.style.display = "block";
+    let p = document.createElement("p");
+    yesnoEl.appendChild(p);
+
+    //Time out after 1 second
+    setTimeout(function () {
+        p.style.display = 'none';
+    }, 1000);
+
+    //Checking answers if they're correct or false
+    if (questions[questionCount].correctAnswer === event.target.value) {
+        p.textContent = "Correct!";
+    } else if (questions[questionCount].correctAnswer !== event.target.value) {
+        secondsLeft = secondsLeft - 10;
+        p.textContent = "Wrong!";
+    }
+
+    //Increment so the questions index is increased
+    if (questionCount < questions.length) {
+        questionCount++;
+    }
+    //Call setQuestion to bring in next question when any ansBtn is clicked
+    setQuestion(questionCount);
 }
