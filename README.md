@@ -2,10 +2,14 @@
 This is a timed coding quiz with multiple choiced questions. This application was coded from scratch.
 
 ## Table of Contents
-
+- [Overview](#overview)
 - [Built With](#built-with)
 - [Features](#features)
 - [Contact](#contact)
+
+## Overview
+* This is the GitHub Pages live demo to the Code Quiz: https://andynewen.github.io/code-quiz/
+
 
 ### Built With
 
@@ -32,5 +36,5 @@ THEN I can save my initials and my score
 ```
 
 ## Contact
-LinkedIn: https://www.linkedin.com/in/andy-nguyen-b5b356256/
-GitHub: https://github.com/andynewen
+* LinkedIn: https://www.linkedin.com/in/andy-nguyen-b5b356256/
+* GitHub: https://github.com/andynewen
